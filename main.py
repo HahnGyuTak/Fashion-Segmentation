@@ -322,122 +322,122 @@ def detect_and_color_splash(model, image_path=None, video_path=None):
 ############################################################
  
  
-# if __name__ == "__main__":
-#     ROOT_DIR = os.path.abspath("./")
-#     DEFAULT_LOGS_DIR = os.path.join(ROOT_DIR, "logs")
-#     COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
-#     import argparse
+if __name__ == "__main__":
+    ROOT_DIR = os.path.abspath("./")
+    DEFAULT_LOGS_DIR = os.path.join(ROOT_DIR, "logs")
+    COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
+    import argparse
  
-#     # Parse command line arguments
-#     parser = argparse.ArgumentParser(
-#         description='Train Match R-CNN for DeepFashion.')
-#     parser.add_argument("command",
-#                         metavar="<command>",
-#                         help="'train' or 'splash'")
-#     parser.add_argument('--weights', required=True,
-#                         metavar="/path/to/weights.h5",
-#                         help="Path to weights .h5 file or 'coco'")
-#     parser.add_argument('--logs', required=False,
-#                         default=DEFAULT_LOGS_DIR,
-#                         metavar="/path/to/logs/",
-#                         help='Logs and checkpoints directory (default=logs/)')
-#     parser.add_argument('--image', required=False,
-#                         metavar="path or URL to image",
-#                         help='Image to apply the color splash effect on')
-#     parser.add_argument('--video', required=False,
-#                         metavar="path or URL to video",
-#                         help='Video to apply the color splash effect on')
-#     args = parser.parse_args()
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Train Match R-CNN for DeepFashion.')
+    parser.add_argument("command",
+                        metavar="<command>",
+                        help="'train' or 'splash'")
+    parser.add_argument('--weights', required=True,
+                        metavar="/path/to/weights.h5",
+                        help="Path to weights .h5 file or 'coco'")
+    parser.add_argument('--logs', required=False,
+                        default=DEFAULT_LOGS_DIR,
+                        metavar="/path/to/logs/",
+                        help='Logs and checkpoints directory (default=logs/)')
+    parser.add_argument('--image', required=False,
+                        metavar="path or URL to image",
+                        help='Image to apply the color splash effect on')
+    parser.add_argument('--video', required=False,
+                        metavar="path or URL to video",
+                        help='Video to apply the color splash effect on')
+    args = parser.parse_args()
  
-#     """
-#     # Validate arguments
-#     if args.command == "train":
-#         assert args.dataset, "Argument --dataset is required for training"
-#     elif args.command == "splash":
-#         assert args.image or args.video,\
-#                "Provide --image or --video to apply color splash"
-#     """
+    """
+    # Validate arguments
+    if args.command == "train":
+        assert args.dataset, "Argument --dataset is required for training"
+    elif args.command == "splash":
+        assert args.image or args.video,\
+               "Provide --image or --video to apply color splash"
+    """
  
-#     print("Weights: ", args.weights)
-#     print("Logs: ", args.logs)
+    print("Weights: ", args.weights)
+    print("Logs: ", args.logs)
  
  
-#     # Configurations
-#     if args.command == "train":
-#         config = DeepFashion2Config()
-#     else:
-#         class InferenceConfig(DeepFashion2Config):
-#             # Set batch size to 1 since we'll be running inference on
-#             # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
-#             GPU_COUNT = 1
-#             IMAGES_PER_GPU = 1
-#         config = InferenceConfig()
-#     config.display()
+    # Configurations
+    if args.command == "train":
+        config = DeepFashion2Config()
+    else:
+        class InferenceConfig(DeepFashion2Config):
+            # Set batch size to 1 since we'll be running inference on
+            # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
+            GPU_COUNT = 1
+            IMAGES_PER_GPU = 1
+        config = InferenceConfig()
+    config.display()
  
-#     # Create model
-#     if args.command == "train":
-#         model = MaskRCNN(mode="training", config=config,
-#                                   model_dir=args.logs)
-#     else:
-#         model = MaskRCNN(mode="inference", config=config,
-#                                   model_dir=args.logs)
+    # Create model
+    if args.command == "train":
+        model = MaskRCNN(mode="training", config=config,
+                                  model_dir=args.logs)
+    else:
+        model = MaskRCNN(mode="inference", config=config,
+                                  model_dir=args.logs)
  
-#     # Select weights file to load
-#     if args.weights.lower() == "coco":
-#         weights_path = COCO_WEIGHTS_PATH
-#     elif args.weights.lower() == "last":
-#         # Find last trained weights
-#         weights_path = model.find_last()
-#     elif args.weights.lower() == "imagenet":
-#         # Start from ImageNet trained weights
-#         weights_path = model.get_imagenet_weights()
-#     else:
-#         weights_path = args.weights
+    # Select weights file to load
+    if args.weights.lower() == "coco":
+        weights_path = COCO_WEIGHTS_PATH
+    elif args.weights.lower() == "last":
+        # Find last trained weights
+        weights_path = model.find_last()
+    elif args.weights.lower() == "imagenet":
+        # Start from ImageNet trained weights
+        weights_path = model.get_imagenet_weights()
+    else:
+        weights_path = args.weights
  
-#     # Load weights
-#     print("Loading weights ", weights_path)
-#     if args.weights.lower() == "coco":
-#         # Exclude the last layers because they require a matching
-#         # number of classes
-#         model.load_weights(weights_path, by_name=True, exclude=[
-#             "mrcnn_class_logits", "mrcnn_bbox_fc",
-#             "mrcnn_bbox", "mrcnn_mask"])
-#     else:
-#         model.load_weights(weights_path, by_name=True)
+    # Load weights
+    print("Loading weights ", weights_path)
+    if args.weights.lower() == "coco":
+        # Exclude the last layers because they require a matching
+        # number of classes
+        model.load_weights(weights_path, by_name=True, exclude=[
+            "mrcnn_class_logits", "mrcnn_bbox_fc",
+            "mrcnn_bbox", "mrcnn_mask"])
+    else:
+        model.load_weights(weights_path, by_name=True)
  
-#     # Train or evaluate
-#     if args.command == "train":
-#         train(model, config)
-#     elif args.command == "splash":
-#         detect_and_color_splash(model, image_path=args.image, video_path=args.video)
-#     else:
-#         print("'{}' is not recognized. "
-#               "Use 'train' or 'splash'".format(args.command))
+    # Train or evaluate
+    if args.command == "train":
+        train(model, config)
+    elif args.command == "splash":
+        detect_and_color_splash(model, image_path=args.image, video_path=args.video)
+    else:
+        print("'{}' is not recognized. "
+              "Use 'train' or 'splash'".format(args.command))
         
         
 
-from fastapi import FastAPI
+# from fastapi import FastAPI
 
-app = FastAPI()
+# app = FastAPI()
 
-# @app.get("/")
-# def health_check():
-#     return {"ping":"pong"}
+# # @app.get("/")
+# # def health_check():
+# #     return {"ping":"pong"}
 
 
-@app.get("/inference")
-def test_handler():
+# @app.get("/inference")
+# def test_handler():
     
-    class InferenceConfig(DeepFashion2Config):
-        # Set batch size to 1 since we'll be running inference on
-        # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
-        GPU_COUNT = 1
-        IMAGES_PER_GPU = 1
-    config = InferenceConfig()
-    model = MaskRCNN(mode="inference", config=config, model_dir="log/")
-    model.load_weights("logs/deepfashion220230910T0138/mask_rcnn_deepfashion2_0025.h5", by_name=True)
-    detect_and_color_splash(model, image_path="test5.png")
-    return {"ping":"pong"}
+#     class InferenceConfig(DeepFashion2Config):
+#         # Set batch size to 1 since we'll be running inference on
+#         # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
+#         GPU_COUNT = 1
+#         IMAGES_PER_GPU = 1
+#     config = InferenceConfig()
+#     model = MaskRCNN(mode="inference", config=config, model_dir="log/")
+#     model.load_weights("logs/deepfashion220230910T0138/mask_rcnn_deepfashion2_0025.h5", by_name=True)
+#     detect_and_color_splash(model, image_path="test5.png")
+#     return {"ping":"pong"}
 
 # if __name__ == "__main__":
     
